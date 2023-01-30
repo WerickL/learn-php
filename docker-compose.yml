@@ -1,0 +1,8 @@
+version: "2"
+services:
+  api:
+    image: "paulofilipem/go-engine-core:v1.0.0"
+    volumes:
+      - './:/var/www'
+    ports:
+      - "8086:80"
