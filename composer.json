@@ -1,5 +1,19 @@
 {
+    "name": "werick/laminas",
+    "autoload": {
+        "psr-4": {
+            "Werick\\Laminas\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "WerickL",
+            "email": "wericklima2019@gmail.com"
+        }
+    ],
     "require": {
-        "laminas/laminas-http": "^2.16"
+        "doctrine/orm": "^2.14",
+        "symfony/cache": "^5.4",
+        "symfony/yaml": "^5.4"
     }
 }
