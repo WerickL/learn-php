@@ -1,41 +1,60 @@
 <?php
-namespace Werick\Laminas\Model;
+namespace Werick\Laminas\Entity;
 require __DIR__."/../../vendor/autoload.php";
 use DateTime;
+use DateTimeZone;
 use Doctrine\ORM\Mapping\Entity;
-use Doctrine\ORM\Mapping\Table;
 use Doctrine\ORM\Mapping\Column;
-use Doctrine\DBAL\Types\Types;
-
-#[Entity]
-#[Table(name: 'tarefa')]
+use Doctrine\ORM\Mapping\Id;
+use Doctrine\ORM\Mapping\GeneratedValue;
+use Werick\Laminas\Helper\EntityManagerFactory;
+/**
+ * @Entity
+ */
 class Task
 {
-    #[Id]
-    #[Column(type: 'integer')]
-    #[GeneratedValue]
+    /**
+     * @Id
+     * @Column(type="integer")
+     * @GeneratedValue(strategy="IDENTITY")
+     * 
+     */
     private ?int $id = null;
-    #[Column(name:'nome')]
+    /**
+     * @Column(type="string")
+     */
     private string $nome;
-    #[Column(name: 'data_de_cadastro', type: Types::DATETIME)]
+    /**
+     * @Column(type="datetime")
+     */
     private  DateTime $dataDeCadastro;
-    #[Column(name: 'data_de_inicio', type: Types::DATETIME)]
+    /**
+     * @Column(type="datetime", nullable=true)
+     */
     private  DateTime $dataDeInicio;
-    #[Column(name:'status',type: Types::INTEGER)]
+    /**
+     * @Column(type="integer")
+     */
     private int $status;
-    #[Column(name: 'data_prevista', type: Types::DATETIME)]
+    /**
+     * @Column(type="datetime")
+     */
     private  DateTime $dataPrevista;
-    #[Column(name: 'data_de_conclusao', type: Types::DATETIME)]
+    /**
+     * @Column(type="datetime", nullable=true)
+     */
     private  DateTime $dataDeConclusao;
-    #[Column(name:'detalhes')]
+    /**
+     * @Column(type="string", nullable=true)
+     */
     private string $detalhes;
 
     public function __construct(string $nome, string $status, string $dataPrevista)
     {
         $this->nome = $nome;
-        $this->dataDeCadastro = new DateTime('now');
+        $this->dataDeCadastro = new DateTime('now', new DateTimeZone('America/Sao_Paulo'));
         $this->status = $status;
-        $this->dataPrevista = new DateTime($dataPrevista);
+        $this->dataPrevista = new DateTime($dataPrevista, new DateTimeZone('America/Sao_Paulo'));
     }
 
     public function getNome()
@@ -74,6 +93,14 @@ class Task
     {
         $this->dataDeConclusao = new DateTime(strtotime($data, "Y-m-d H-i-s"));
     }
+    public function getdataDeInicio()
+    {
+        return $this->dataDeInicio;
+    }
+    public function  setDataDeInicio(string $data)
+    {
+        $this->dataDeInicio = new DateTime(strtotime($data, "Y-m-d H-i-s"));
+    }
     public function getdetalhes()
     {
         return $this->detalhes;
@@ -82,6 +109,5 @@ class Task
     {
         $this->detalhes = $detalhes;
     }
-    
 }
  

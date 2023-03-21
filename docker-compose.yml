@@ -1,6 +1,11 @@
-version: '2'
+version: "2"
 services:
-  php-orm:
-    build: .
+  api:
+    image: "paulofilipem/go-engine-core:v1.0.2"
+    volumes:
+      - './:/var/www'
     ports:
-    - "9091:8081"
+      - 8086:80
+    environment:
+      - "externalBaseUrl=http://localhost:8086"
+      
