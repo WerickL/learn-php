@@ -1,11 +1,11 @@
 version: "2"
 services:
-  api:
-    image: "paulofilipem/go-engine-core:v1.0.2"
-    volumes:
-      - './:/var/www'
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: sh -c "composer install --ignore-platform-reqs"
     ports:
-      - 8086:80
-    environment:
-      - "externalBaseUrl=http://localhost:8086"
-      
+     - "9090:80"
+    volumes:
+     - .:/var/www

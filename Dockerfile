@@ -1,24 +1,27 @@
-# Gestao Online - Integrador API
-FROM us.gcr.io/gestao-erp-stage/go-php-core:e8a32f3
 
-# HTML -> PDF cli tool
-RUN cd /tmp && wget https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6-1/wkhtmltox_0.12.6-1.buster_amd64.deb
-RUN dpkg -i /tmp/wkhtmltox_0.12.6-1.buster_amd64.deb
+FROM php:8.1.17-apache
 
+RUN a2dismod mpm_event && a2enmod mpm_prefork 
+RUN set -eux; 
+RUN apt-get update \
+ && apt-get install -y wget git
 WORKDIR /var/www
 ENV APACHE_RUN_USER=www-data
+RUN  pecl install redis grpc\
+ && docker-php-ext-configure intl \
+ && docker-php-ext-install zip intl sockets \
+ && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+ && docker-php-ext-install zip gd xml soap \
+ && docker-php-ext-enable redis \
+ && a2enmod rewrite \
+&& sed -ri -e 's!/var/www/html!/var/www/public!g' /etc/apache2/sites-available/*.conf \
+&& mv /var/www/html /var/www/public
+RUN sed -ri -e 's!/var/www/!/var/www/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+RUN curl -sS https://getcomposer.org/installer \
+  | php -- --install-dir=/usr/local/bin --filename=composer \
+ && echo "AllowEncodedSlashes On" >> /etc/apache2/apache2.conf
 
-# Copia os arquivos com a permissão correta
-# O usuário e grupo são criados na image base
-ADD --chown=1000:1000 . /var/www/
-
-# Cria pasta de cache
-RUN mkdir -p /var/www/data/cache \
- && chown -R www-data:www-data /var/www/data/cache \
- && mkdir -p /var/www/public/api-tools \
- && chown -R www-data:www-data /var/www/public/api-tools
-
-# instalação de dependências
+RUN ls ./
+ENV COMPOSER_ALLOW_SUPERUSER=1
 RUN composer install
 
-USER www-data
